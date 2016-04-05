@@ -1,8 +1,11 @@
 var NODE_ENV = process.env.NODE_ENV || 'development';
 var webpack = require('webpack');
 
+const path = require('path');
+
+
 module.exports = {
-	context: __dirname + '/dev/scripts',
+	context: path.join(__dirname, '/dev/scripts'),
 	entry: {
 		main: './main'
 	},

@@ -273,22 +273,24 @@ SvgChart.prototype = {
 			this.isAnimating = false;
 		}
 
+		const { options: { outerRadius, innerRadius }} = this;
+
 		var startAngle = lib.transformAngleToRadian(this.startAngle);
 		var largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;
-		var startX = this.center.x + Math.cos(startAngle) * this.options.outerRadius;
-		var startY = this.center.y + Math.sin(startAngle) * this.options.outerRadius;
-		var endX2 = this.center.x + Math.cos(startAngle) * this.options.innerRadius;
-		var endY2 = this.center.y + Math.sin(startAngle) * this.options.innerRadius;
-		var endX = this.center.x + Math.cos(endAngle) * this.options.outerRadius;
-		var endY = this.center.y + Math.sin(endAngle) * this.options.outerRadius;
-		var startX2 = this.center.x + Math.cos(endAngle) * this.options.innerRadius;
-		var startY2 = this.center.y + Math.sin(endAngle) * this.options.innerRadius;
+		var startX = this.center.x + Math.cos(startAngle) * outerRadius;
+		var startY = this.center.y + Math.sin(startAngle) * outerRadius;
+		var endX2 = this.center.x + Math.cos(startAngle) * innerRadius;
+		var endY2 = this.center.y + Math.sin(startAngle) * innerRadius;
+		var endX = this.center.x + Math.cos(endAngle) * outerRadius;
+		var endY = this.center.y + Math.sin(endAngle) * outerRadius;
+		var startX2 = this.center.x + Math.cos(endAngle) * innerRadius;
+		var startY2 = this.center.y + Math.sin(endAngle) * innerRadius;
 
 		var cmd = [
 			'M', startX, startY,
-			'A', this.options.outerRadius, this.options.outerRadius, 0, largeArc, 1, endX, endY,
+			'A', outerRadius, outerRadius, 0, largeArc, 1, endX, endY,
 			'L', startX2, startY2,
-			'A', this.options.innerRadius, this.options.innerRadius, 0, largeArc, 0, endX2, endY2,
+			'A', innerRadius, innerRadius, 0, largeArc, 0, endX2, endY2,
 			'Z'
 		];
 

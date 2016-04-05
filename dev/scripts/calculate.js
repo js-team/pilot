@@ -1,5 +1,7 @@
 'use strict';
 
+//export const calculateAngle = (data, pathSumm) => (data * 100 / pathSumm) * 360 / 100;
+
 module.exports = {
 	calculateAngle: function(data, pathSumm) {
 		return (data * 100 / pathSumm) * 360 / 100;

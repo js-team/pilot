@@ -1,15 +1,14 @@
 'use strict';
 
 var charts = require('./svg-chart');
-
-document.addEventListener('DOMContentLoaded', function() {
-	initSvgChart();
-});
-
-function initSvgChart() {
+const initSvgChart = () => {
 	var holder = document.querySelectorAll('.svg-chart');
 
-	[].slice.call(holder).forEach(function(item) {
+	[ ...holder ].forEach(function(item) {
 		new charts(item);
 	});
-}
+};
+
+document.addEventListener('DOMContentLoaded', initSvgChart);
+
+
