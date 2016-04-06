@@ -8,9 +8,9 @@ var browserSync = require('browser-sync').create();
 var config = require('./app.config');
 
 gulp.task('build-styles', function() {
-	return gulp.src('./dev/scss/styles.scss')
-		.pipe(sass().on('error', sass.logError))
-		.pipe(gulp.dest('./build/styles'));
+	return gulp.src('./dev/scss/*.scss')
+		.pipe(sass())
+		.pipe(gulp.dest('./build'));
 });
 
 gulp.task('build-scripts', function(cb) {
@@ -24,18 +24,17 @@ gulp.task('build-scripts', function(cb) {
 	});
 });
 
-gulp.task('server', function(cb) {
+gulp.task('browser-sync', function(cb) {
 	browserSync.init({
 		server: {
 			baseDir: './build/'
-		}
+		},
+		files: ['./build/scripts/*.js', './build/*.css', './build/*.html']
 	}, cb);
-
-	browserSync.watch('build/**/*.*').on('change', browserSync.reload);
 });
 
 gulp.task('watch', function(cb) {
-	gulp.watch('./dev/scss/**/*.*', gulp.series('build-styles'));
+	gulp.watch('./dev/scss/*.scss', gulp.series('build-styles'));
 
 	gulp.watch('./dev/scripts/**/*.js', gulp.series('build-scripts'));
 
@@ -43,4 +42,4 @@ gulp.task('watch', function(cb) {
 });
 
 gulp.task('__build', gulp.parallel('build-styles', 'build-scripts'));
-gulp.task('__dev', gulp.series('__build', 'server', 'watch'));
+gulp.task('__dev', gulp.series('__build', 'browser-sync', 'watch'));

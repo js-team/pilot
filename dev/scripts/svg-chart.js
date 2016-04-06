@@ -1,14 +1,9 @@
 'use strict';
 
-module.exports = SvgChart;
+require('window.requestAnimationFrame');
 
-require('babel-polyfill');
-
-var request = require('./request');
 var lib = require('./calculate');
 var progressBar = require('./progress-bar');
-
-request();
 
 function SvgChart(context) {
 	this.options = {
@@ -297,3 +292,5 @@ SvgChart.prototype = {
 		this.paths[index].setAttribute('d', cmd.join(' '));
 	}
 };
+
+module.exports = SvgChart;

@@ -1,8 +1,15 @@
-var NODE_ENV = process.env.NODE_ENV || 'development';
-var webpack = require('webpack');
-
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const webpack = require('webpack');
 const path = require('path');
 
+const plugins = [
+	new webpack.DefinePlugin({
+		NODE_ENV: JSON.stringify(NODE_ENV)
+	}),
+	new webpack.optimize.CommonsChunkPlugin({
+		name: 'common'
+	})
+];
 
 module.exports = {
 	context: path.join(__dirname, '/dev/scripts'),
@@ -15,14 +22,7 @@ module.exports = {
 	},
 	watch: false,
 	devtool: NODE_ENV === 'development' ? 'inline-source-map' : null,
-	plugins: [
-		new webpack.DefinePlugin({
-			NODE_ENV: JSON.stringify(NODE_ENV)
-		}),
-		new webpack.optimize.CommonsChunkPlugin({
-			name: 'common'
-		})
-	],
+	plugins: plugins,
 	module: {
 		loaders: [{
 			test: /\.js$/,
