@@ -1,4 +1,5 @@
 node_modules/
 build/styles
 build/scripts
+build/styles.css
 .idea/
