@@ -269,17 +269,18 @@ export class SvgChart {
 		}
 
 		const {options: {outerRadius, innerRadius}} = this;
+		const {center: {x, y}} = this;
 
 		let startAngle = lib.transformAngleToRadian(this.startAngle);
 		let largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;
-		let startX = this.center.x + Math.cos(startAngle) * outerRadius;
-		let startY = this.center.y + Math.sin(startAngle) * outerRadius;
-		let endX2 = this.center.x + Math.cos(startAngle) * innerRadius;
-		let endY2 = this.center.y + Math.sin(startAngle) * innerRadius;
-		let endX = this.center.x + Math.cos(endAngle) * outerRadius;
-		let endY = this.center.y + Math.sin(endAngle) * outerRadius;
-		let startX2 = this.center.x + Math.cos(endAngle) * innerRadius;
-		let startY2 = this.center.y + Math.sin(endAngle) * innerRadius;
+		let startX = x + Math.cos(startAngle) * outerRadius;
+		let startY = y + Math.sin(startAngle) * outerRadius;
+		let endX2 = x + Math.cos(startAngle) * innerRadius;
+		let endY2 = y + Math.sin(startAngle) * innerRadius;
+		let endX = x + Math.cos(endAngle) * outerRadius;
+		let endY = y + Math.sin(endAngle) * outerRadius;
+		let startX2 = x + Math.cos(endAngle) * innerRadius;
+		let startY2 = y + Math.sin(endAngle) * innerRadius;
 
 		const cmd = [
 			'M', startX, startY,
