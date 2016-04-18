@@ -1,3 +1,6 @@
+import {config} from 'app.config';
+console.log(config);
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 const path = require('path');

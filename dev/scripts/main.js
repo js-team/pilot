@@ -3,9 +3,7 @@
 import {SvgChart as charts} from './svg-chart';
 
 const initSvgChart = () => {
-	let holder = document.querySelectorAll('.svg-chart');
-
-	[...holder].forEach(function(item) {
+	[...document.querySelectorAll('.svg-chart')].forEach(function(item) {
 		new charts(item);
 	});
 };

@@ -191,11 +191,7 @@ export class SvgChart {
 		let radians = Math.atan2(coordinateY, coordinateX);
 		let rotateRadians = 0;
 
-		if (radians.toString().indexOf('-') !== -1) {
-			rotateRadians = (Math.PI * 2 + radians);
-		} else {
-			rotateRadians = radians;
-		}
+		radians.toString().indexOf('-') !== -1 ? rotateRadians = (Math.PI * 2 + radians) : rotateRadians = radians;
 
 		let angle = lib.transformRadianToAngle(rotateRadians);
 
@@ -226,7 +222,7 @@ export class SvgChart {
 	animateProgress() {
 		let counter = 0;
 
-		const animate = (time) => {
+		const animate = time => {
 			if (time < this.levelDuration) {
 				let percents = lib.calculatePercents(time, this.levelDuration);
 
@@ -247,7 +243,7 @@ export class SvgChart {
 	drawChart(data, resolve, index) {
 		let endAngle = this.startAngle + lib.calculateAngle(data.value, this.pathSumm);
 
-		const animatePath = (time) => {
+		const animatePath = time => {
 			let angle = time * this.animSpeed;
 
 			this.drawPath(lib.transformAngleToRadian(Math.min(endAngle, angle)), index);
@@ -285,7 +281,7 @@ export class SvgChart {
 		let startX2 = this.center.x + Math.cos(endAngle) * innerRadius;
 		let startY2 = this.center.y + Math.sin(endAngle) * innerRadius;
 
-		let cmd = [
+		const cmd = [
 			'M', startX, startY,
 			'A', outerRadius, outerRadius, 0, largeArc, 1, endX, endY,
 			'L', startX2, startY2,
