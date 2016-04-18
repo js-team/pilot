@@ -1,9 +1,7 @@
-import {config} from 'app.config';
-console.log(config);
-
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 const path = require('path');
+const config = require('./app.config');
 
 const plugins = [
 	new webpack.DefinePlugin({
@@ -15,12 +13,12 @@ const plugins = [
 ];
 
 module.exports = {
-	context: path.join(__dirname, '/dev/scripts'),
+	context: path.join(__dirname, `${config.scriptsDevPath}`),
 	entry: {
 		main: './main'
 	},
 	output: {
-		path: __dirname + '/build/scripts',
+		path: __dirname + `${config.scriptsBuildPath}`,
 		filename: '[name].js'
 	},
 	watch: false,
