@@ -1,9 +1,9 @@
 'use strict';
 
-var charts = require('./svg-chart');
+import {SvgChart as charts} from './svg-chart';
 
 const initSvgChart = () => {
-	var holder = document.querySelectorAll('.svg-chart');
+	let holder = document.querySelectorAll('.svg-chart');
 
 	[...holder].forEach(function(item) {
 		new charts(item);

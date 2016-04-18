@@ -1,15 +1,15 @@
 'use strict';
 
-function ProgressBar(holder) {
-	var canvas = document.createElement('canvas');
+export default function ProgressBar(holder) {
+	let canvas = document.createElement('canvas');
 
 	canvas.setAttribute('width', 320);
 	canvas.setAttribute('height', 20);
 	holder.appendChild(canvas);
 
-	var ctx = canvas.getContext('2d');
-	var canvasWidth = canvas.width;
-	var canvasHeight = canvas.height;
+	let ctx = canvas.getContext('2d');
+	let canvasWidth = canvas.width;
+	let canvasHeight = canvas.height;
 
 	function drawHolder() {
 		ctx.beginPath();
@@ -32,5 +32,3 @@ function ProgressBar(holder) {
 		}
 	};
 }
-
-module.exports = ProgressBar;

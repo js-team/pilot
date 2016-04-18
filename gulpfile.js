@@ -1,20 +1,20 @@
 'use strict';
 
-var gulp = require('gulp');
-var webpack = require('webpack');
-var webpackConfig = require('./webpack.config');
-var sass = require('gulp-sass');
-var browserSync = require('browser-sync').create();
-var config = require('./app.config');
+const gulp = require('gulp');
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
+const sass = require('gulp-sass');
+const browserSync = require('browser-sync').create();
+const config = require('./app.config');
 
-gulp.task('build-styles', function() {
+gulp.task('build-styles', () => {
 	return gulp.src('./dev/scss/*.scss')
 		.pipe(sass())
 		.pipe(gulp.dest('./build'));
 });
 
-gulp.task('build-scripts', function(cb) {
-	webpack(webpackConfig, function(err, stats) {
+gulp.task('build-scripts', cb => {
+	webpack(webpackConfig, (err, stats) => {
 		if (err) {
 			console.log(err);
 			console.log(stats);
@@ -24,7 +24,7 @@ gulp.task('build-scripts', function(cb) {
 	});
 });
 
-gulp.task('browser-sync', function(cb) {
+gulp.task('browser-sync', cb => {
 	browserSync.init({
 		server: {
 			baseDir: './build/'
@@ -33,7 +33,7 @@ gulp.task('browser-sync', function(cb) {
 	}, cb);
 });
 
-gulp.task('watch', function(cb) {
+gulp.task('watch', cb => {
 	gulp.watch('./dev/scss/*.scss', gulp.series('build-styles'));
 
 	gulp.watch('./dev/scripts/**/*.js', gulp.series('build-scripts'));

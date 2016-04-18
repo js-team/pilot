@@ -2,27 +2,31 @@
 
 require('window.requestAnimationFrame');
 
-var lib = require('./calculate');
-var progressBar = require('./progress-bar');
+import * as lib from './calculate';
+import ProgressBar from './progress-bar';
 
-function SvgChart(context) {
-	this.options = {
-		width: 320,
-		height: 320,
-		outerRadius: 160,
-		innerRadius: 110,
-		animDuration: 1000,
-		delay: 500
-	};
-	this.init(context);
-}
-SvgChart.prototype = {
-	init: function(context) {
+export class SvgChart {
+	constructor(context) {
+		this.options = {
+			width: 320,
+			height: 320,
+			outerRadius: 160,
+			innerRadius: 110,
+			animDuration: 1000,
+			stepDuration: 16,
+			delay: 500
+		};
+
+		this.init(context);
+	}
+
+	init(context) {
 		this.container = context;
 		this.findElements();
 		this.attachEvents();
-	},
-	findElements: function() {
+	}
+
+	findElements() {
 		this.dataSrc = this.container.getAttribute('data-values');
 		this.chartData = JSON.parse(this.dataSrc);
 		this.dataAnimDuration = this.container.getAttribute('data-level-duration');
@@ -38,9 +42,7 @@ SvgChart.prototype = {
 			y: this.options.height / 2
 		};
 
-		this.pathSumm = this.chartData.reduce(function(sum, current) {
-			return sum + current.value;
-		}, 0);
+		this.pathSumm = this.chartData.reduce((sum, current) => sum + current.value, 0);
 
 		this.startAngle = 0;
 		this.animSpeed = 360 / this.options.animDuration;
@@ -52,66 +54,64 @@ SvgChart.prototype = {
 		this.sectorAngle = 0;
 		this.levelTimer = null;
 		this.timer = null;
-	},
-	attachEvents: function() {
-		var self = this;
+	}
 
+	attachEvents() {
 		this.createSVG();
 		this.createCircleHolder();
 		this.createLineHolder();
 		this.createStartButton();
 		this.createInfoBox();
 
-		this.chartData.forEach(function(item, i) {
-			var path = document.createElementNS(self.svgns, 'path');
+		this.chartData.forEach((item, i) => {
+			let path = document.createElementNS(this.svgns, 'path');
 			path.setAttribute('fill', item.color);
-			self.paths.push(path);
-			self.circle.appendChild(path);
-			self.rotateElement(self.circle, -90);
+			this.paths.push(path);
+			this.circle.appendChild(path);
+			this.rotateElement(this.circle, -90);
 
-			var itemPromise = new Promise(function(resolve) {
-				Promise.all(self.queue).then(function() {
-					self.drawChart(item, resolve, i);
+			let itemPromise = new Promise(resolve => {
+				Promise.all(this.queue).then(() => {
+					this.drawChart(item, resolve, i);
 				});
 			});
 
-			self.queue.push(itemPromise);
+			this.queue.push(itemPromise);
 		});
 
-		this.progressBar = new progressBar(this.container);
+		this.progressBar = new ProgressBar(this.container);
 
-		this.clickHandler = function() {
-			self.startLevel();
-		};
-
-		this.mousemoveHandler = function(e) {
-			self.rotateCircle(e);
-		};
+		this.clickHandler = () => this.startLevel();
+		this.mousemoveHandler = (e) => this.rotateCircle(e);
 
 		this.startButton.addEventListener('click', this.clickHandler);
-	},
-	createSVG: function() {
+	}
+
+	createSVG() {
 		this.svg = document.createElementNS(this.svgns, 'svg');
 		this.svg.setAttribute('width', this.options.width);
 		this.svg.setAttribute('height', this.options.height);
 		this.container.appendChild(this.svg);
-	},
-	createCircleHolder: function() {
+	}
+
+	createCircleHolder() {
 		this.circle = document.createElementNS(this.svgns, 'g');
 		this.svg.appendChild(this.circle);
-	},
-	createLineHolder: function() {
+	}
+
+	createLineHolder() {
 		this.lineHolder = document.createElementNS(this.svgns, 'g');
 		this.svg.appendChild(this.lineHolder);
 		this.rotateElement(this.lineHolder, 90);
-	},
-	createStartButton: function() {
+	}
+
+	createStartButton() {
 		this.startButton = document.createElementNS(this.svgns, 'g');
 		this.startButton.setAttribute('transform', 'translate(110, 80)');
 		this.startButton.setAttribute('style', 'cursor: pointer');
 		this.svg.appendChild(this.startButton);
 
-		var rect = document.createElementNS(this.svgns, 'rect');
+		let rect = document.createElementNS(this.svgns, 'rect');
 		rect.setAttribute('rx', 7);
 		rect.setAttribute('ry', 7);
 		rect.setAttribute('width', 100);
@@ -119,17 +119,18 @@ SvgChart.prototype = {
 		rect.setAttribute('style', 'fill: #060;');
 		this.startButton.appendChild(rect);
 
-		var buttonText = document.createElementNS(this.svgns, 'text');
+		let buttonText = document.createElementNS(this.svgns, 'text');
 		buttonText.setAttribute('x', 50);
 		buttonText.setAttribute('y', 20);
 		buttonText.setAttribute('style', 'fill: #fff; font-size: 14px; line-height: 20px; text-anchor: middle;');
 		this.startButton.appendChild(buttonText);
 
-		var textNode = document.createTextNode('Start!');
+		let textNode = document.createTextNode('Start!');
 		buttonText.appendChild(textNode);
-	},
-	createInfoBox: function() {
-		var infoBox = document.createElementNS(this.svgns, 'text');
+	}
+
+	createInfoBox() {
+		let infoBox = document.createElementNS(this.svgns, 'text');
 		infoBox.setAttribute('style', 'fill: #000; font-size: 14px; line-height: 20px; text-anchor: middle;');
 		infoBox.setAttribute('x', this.options.width / 2);
 		infoBox.setAttribute('y', this.options.height * (3 / 4));
@@ -137,8 +138,9 @@ SvgChart.prototype = {
 
 		this.infoText = document.createTextNode(this.levelCounter + ' Level');
 		infoBox.appendChild(this.infoText);
-	},
-	drawLine: function() {
+	}
+
+	drawLine() {
 		this.lineAngle = lib.getRandomInt(0, 360);
 
 		this.line = document.createElementNS(this.svgns, 'line');
@@ -149,10 +151,9 @@ SvgChart.prototype = {
 		this.line.setAttribute('style', 'stroke: #0f497f; stroke-width: 6; stroke-linecap: round');
 		this.rotateElement(this.line, this.lineAngle);
 		this.lineHolder.appendChild(this.line);
-	},
-	startLevel: function() {
-		var self = this;
+	}
 
+	startLevel() {
 		if (this.isAnimating) return;
 		if (this.line) this.lineHolder.removeChild(this.line);
 
@@ -168,25 +169,27 @@ SvgChart.prototype = {
 
 			this.svg.addEventListener('mousemove', this.mousemoveHandler);
 		}
-	},
-	completeGame: function(text) {
+	}
+
+	completeGame(text) {
 		this.svg.removeChild(this.startButton);
 		this.lineHolder.removeChild(this.line);
 		this.progressBar.resetProgress();
 		this.rotateElement(this.circle, -90);
 		this.infoText.textContent = text;
-	},
-	rotateElement: function(element, angle) {
+	}
+
+	rotateElement(element, angle) {
 		element.setAttribute('transform', 'rotate(' + angle + ', ' + this.options.width / 2 + ', ' + this.options.height / 2 + ')');
-	},
-	rotateCircle: function(e) {
-		var self = this;
-		var positionX = e.pageX - this.svg.getBoundingClientRect().left;
-		var positionY = e.pageY - this.svg.getBoundingClientRect().top;
-		var coordinateX = positionX - this.options.width / 2;
-		var coordinateY = positionY - this.options.height / 2;
-		var radians = Math.atan2(coordinateY, coordinateX);
-		var rotateRadians = 0;
+	}
+
+	rotateCircle(e) {
+		let positionX = e.pageX - this.svg.getBoundingClientRect().left;
+		let positionY = e.pageY - this.svg.getBoundingClientRect().top;
+		let coordinateX = positionX - this.options.width / 2;
+		let coordinateY = positionY - this.options.height / 2;
+		let radians = Math.atan2(coordinateY, coordinateX);
+		let rotateRadians = 0;
 
 		if (radians.toString().indexOf('-') !== -1) {
 			rotateRadians = (Math.PI * 2 + radians);
@@ -194,7 +197,7 @@ SvgChart.prototype = {
 			rotateRadians = radians;
 		}
 
-		var angle = lib.transformRadianToAngle(rotateRadians);
+		let angle = lib.transformRadianToAngle(rotateRadians);
 
 		this.rotateElement(this.circle, angle);
 
@@ -202,15 +205,15 @@ SvgChart.prototype = {
 			if (!this.timerState) {
 				this.timerState = true;
 
-				this.levelTimer = setTimeout(function() {
-					clearInterval(self.timer);
+				this.levelTimer = setTimeout(() => {
+					clearInterval(this.timer);
 
-					self.svg.removeEventListener('mousemove', self.mousemoveHandler);
+					this.svg.removeEventListener('mousemove', this.mousemoveHandler);
 
-					if (self.levelDuration > self.minLevelDuration) {
-						self.infoText.textContent = 'Level complete!';
+					if (this.levelDuration > this.minLevelDuration) {
+						this.infoText.textContent = 'Level complete!';
 					} else {
-						self.completeGame('You win!');
+						this.completeGame('You win!');
 					}
 				}, this.options.delay);
 			}
@@ -218,41 +221,41 @@ SvgChart.prototype = {
 			clearTimeout(this.levelTimer);
 			this.timerState = false;
 		}
-	},
-	animateProgress: function() {
-		var self = this;
-		var counter = 0;
+	}
 
-		var animate = function(time) {
-			if (time < self.levelDuration) {
-				var percents = lib.calculatePercents(time, self.levelDuration);
+	animateProgress() {
+		let counter = 0;
 
-				self.progressBar.animProgress(percents);
+		const animate = (time) => {
+			if (time < this.levelDuration) {
+				let percents = lib.calculatePercents(time, this.levelDuration);
+
+				this.progressBar.animProgress(percents);
 			} else {
-				clearInterval(self.timer);
-				self.svg.removeEventListener('mousemove', self.mousemoveHandler);
-				self.completeGame('Game over!');
+				clearInterval(this.timer);
+				this.svg.removeEventListener('mousemove', this.mousemoveHandler);
+				this.completeGame('Game over!');
 			}
 		};
 
-		this.timer = setInterval(function() {
-			counter += 16;
+		this.timer = setInterval(() => {
+			counter += this.options.stepDuration;
 			animate(counter);
-		}, 16);
-	},
-	drawChart: function(data, resolve, index) {
-		var self = this;
-		var endAngle = self.startAngle + lib.calculateAngle(data.value, this.pathSumm);
+		}, this.options.stepDuration);
+	}
 
-		var animatePath = function(time) {
-			var angle = time * self.animSpeed;
+	drawChart(data, resolve, index) {
+		let endAngle = this.startAngle + lib.calculateAngle(data.value, this.pathSumm);
 
-			self.drawPath(lib.transformAngleToRadian(Math.min(endAngle, angle)), index);
+		const animatePath = (time) => {
+			let angle = time * this.animSpeed;
+
+			this.drawPath(lib.transformAngleToRadian(Math.min(endAngle, angle)), index);
 
 			if (endAngle <= angle) {
-				self.startAngle += lib.calculateAngle(data.value, self.pathSumm);
+				this.startAngle += lib.calculateAngle(data.value, this.pathSumm);
 
-				if (index === 0) self.sectorAngle = self.startAngle;
+				if (index === 0) this.sectorAngle = this.startAngle;
 
 				resolve();
 				return;
@@ -262,26 +265,27 @@ SvgChart.prototype = {
 		};
 
 		requestAnimationFrame(animatePath);
-	},
-	drawPath: function(endAngle, index) {
+	}
+
+	drawPath(endAngle, index) {
 		if (index === this.paths.length - 1) {
 			this.isAnimating = false;
 		}
 
-		const { options: { outerRadius, innerRadius }} = this;
+		const {options: {outerRadius, innerRadius}} = this;
 
-		var startAngle = lib.transformAngleToRadian(this.startAngle);
-		var largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;
-		var startX = this.center.x + Math.cos(startAngle) * outerRadius;
-		var startY = this.center.y + Math.sin(startAngle) * outerRadius;
-		var endX2 = this.center.x + Math.cos(startAngle) * innerRadius;
-		var endY2 = this.center.y + Math.sin(startAngle) * innerRadius;
-		var endX = this.center.x + Math.cos(endAngle) * outerRadius;
-		var endY = this.center.y + Math.sin(endAngle) * outerRadius;
-		var startX2 = this.center.x + Math.cos(endAngle) * innerRadius;
-		var startY2 = this.center.y + Math.sin(endAngle) * innerRadius;
+		let startAngle = lib.transformAngleToRadian(this.startAngle);
+		let largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;
+		let startX = this.center.x + Math.cos(startAngle) * outerRadius;
+		let startY = this.center.y + Math.sin(startAngle) * outerRadius;
+		let endX2 = this.center.x + Math.cos(startAngle) * innerRadius;
+		let endY2 = this.center.y + Math.sin(startAngle) * innerRadius;
+		let endX = this.center.x + Math.cos(endAngle) * outerRadius;
+		let endY = this.center.y + Math.sin(endAngle) * outerRadius;
+		let startX2 = this.center.x + Math.cos(endAngle) * innerRadius;
+		let startY2 = this.center.y + Math.sin(endAngle) * innerRadius;
 
-		var cmd = [
+		let cmd = [
 			'M', startX, startY,
 			'A', outerRadius, outerRadius, 0, largeArc, 1, endX, endY,
 			'L', startX2, startY2,
@@ -291,6 +295,4 @@ SvgChart.prototype = {
 
 		this.paths[index].setAttribute('d', cmd.join(' '));
 	}
-};
-
-module.exports = SvgChart;
+}
