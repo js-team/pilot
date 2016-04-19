@@ -8,9 +8,9 @@ const browserSync = require('browser-sync').create();
 const config = require('./app.config');
 
 gulp.task('build-styles', () => {
-	return gulp.src(`.${config.stylesDevPath}/*.scss`)
+	return gulp.src(`./${config.stylesDevPath}/*.scss`)
 		.pipe(sass())
-		.pipe(gulp.dest(`.${config.buildFolderPath}`));
+		.pipe(gulp.dest(`./${config.buildFolderPath}`));
 });
 
 gulp.task('build-scripts', cb => {
@@ -27,16 +27,16 @@ gulp.task('build-scripts', cb => {
 gulp.task('browser-sync', cb => {
 	browserSync.init({
 		server: {
-			baseDir: `.${config.buildFolderPath}/`
+			baseDir: `./${config.buildFolderPath}/`
 		},
-		files: [`.${config.scriptsBuildPath}/*.js`, `.${config.buildFolderPath}/*.css`, `.${config.buildFolderPath}/*.html`]
+		files: [`./${config.scriptsBuildPath}/*.js`, `./${config.buildFolderPath}/*.css`, `./${config.buildFolderPath}/*.html`]
 	}, cb);
 });
 
 gulp.task('watch', cb => {
-	gulp.watch(`.${config.stylesDevPath}/*.scss`, gulp.series('build-styles'));
+	gulp.watch(`./${config.stylesDevPath}/*.scss`, gulp.series('build-styles'));
 
-	gulp.watch(`.${config.scriptsDevPath}/*.js`, gulp.series('build-scripts'));
+	gulp.watch(`./${config.scriptsDevPath}/*.js`, gulp.series('build-scripts'));
 
 	cb();
 });

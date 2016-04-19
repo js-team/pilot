@@ -1,3 +1,5 @@
+'use strict';
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 const path = require('path');
@@ -13,12 +15,12 @@ const plugins = [
 ];
 
 module.exports = {
-	context: path.join(__dirname, `${config.scriptsDevPath}`),
+	context: path.join(__dirname, `/${config.scriptsDevPath}`),
 	entry: {
 		main: './main'
 	},
 	output: {
-		path: __dirname + `${config.scriptsBuildPath}`,
+		path: __dirname + `/${config.scriptsBuildPath}`,
 		filename: '[name].js'
 	},
 	watch: false,
