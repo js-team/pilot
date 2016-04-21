@@ -7,11 +7,11 @@ const sass = require('gulp-sass');
 const browserSync = require('browser-sync').create();
 const config = require('./app.config');
 
-gulp.task('build-styles', () => {
-	return gulp.src(`./${config.stylesDevPath}/*.scss`)
+gulp.task('build-styles', () => (
+	gulp.src(`./${config.stylesDevPath}/*.scss`)
 		.pipe(sass())
-		.pipe(gulp.dest(`./${config.buildFolderPath}`));
-});
+		.pipe(gulp.dest(`./${config.buildFolderPath}`))
+));
 
 gulp.task('build-scripts', cb => {
 	webpack(webpackConfig, (err, stats) => {
@@ -35,8 +35,6 @@ gulp.task('browser-sync', cb => {
 
 gulp.task('watch', cb => {
 	gulp.watch(`./${config.stylesDevPath}/*.scss`, gulp.series('build-styles'));
-
-	gulp.watch(`./${config.scriptsDevPath}/*.js`, gulp.series('build-scripts'));
 
 	cb();
 });

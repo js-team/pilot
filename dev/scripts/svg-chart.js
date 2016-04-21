@@ -63,28 +63,28 @@ export class SvgChart {
 		this.createStartButton();
 		this.createInfoBox();
 
-		this.chartData.forEach((item, i) => {
+		this.paths = this.chartData.map((item, i) => {
 			let path = document.createElementNS(this.svgns, 'path');
+
 			path.setAttribute('fill', item.color);
-			this.paths.push(path);
+
 			this.circle.appendChild(path);
 			this.rotateElement(this.circle, -90);
 
 			let itemPromise = new Promise(resolve => {
-				Promise.all(this.queue).then(() => {
-					this.drawChart(item, resolve, i);
-				});
+				Promise.all(this.queue).then(() => this.drawChart(item, resolve, i));
 			});
 
 			this.queue.push(itemPromise);
+
+			return path;
 		});
 
 		this.progressBar = new ProgressBar(this.container);
 
-		this.clickHandler = () => this.startLevel();
 		this.mousemoveHandler = (e) => this.rotateCircle(e);
 
-		this.startButton.addEventListener('click', this.clickHandler);
+		this.startButton.addEventListener('click', () => this.startLevel());
 	}
 
 	createSVG() {
@@ -154,8 +154,11 @@ export class SvgChart {
 	}
 
 	startLevel() {
-		if (this.isAnimating) return;
-		if (this.line) this.lineHolder.removeChild(this.line);
+		if (this.isAnimating) {
+			return;
+		}
+
+		this.line && this.lineHolder.removeChild(this.line);
 
 		this.progressBar.resetProgress();
 		this.timerState = false;
@@ -189,9 +192,7 @@ export class SvgChart {
 		let coordinateX = positionX - this.options.width / 2;
 		let coordinateY = positionY - this.options.height / 2;
 		let radians = Math.atan2(coordinateY, coordinateX);
-		let rotateRadians = 0;
-
-		radians.toString().indexOf('-') !== -1 ? rotateRadians = (Math.PI * 2 + radians) : rotateRadians = radians;
+		let rotateRadians = radians.toString().indexOf('-') !== -1 ? Math.PI * 2 + radians : radians;
 
 		let angle = lib.transformRadianToAngle(rotateRadians);
 
@@ -268,8 +269,7 @@ export class SvgChart {
 			this.isAnimating = false;
 		}
 
-		const {options: {outerRadius, innerRadius}} = this;
-		const {center: {x, y}} = this;
+		const { options: { outerRadius, innerRadius }, center: { x, y } } = this;
 
 		let startAngle = lib.transformAngleToRadian(this.startAngle);
 		let largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;

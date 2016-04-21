@@ -21,12 +21,12 @@ export default function ProgressBar(holder) {
 	drawHolder();
 
 	return {
-		animProgress: percent => {
+		animProgress(percent) {
 			ctx.beginPath();
 			ctx.fillStyle = '#09b646';
 			ctx.fillRect(1, 1, (canvasWidth * percent / 100) - 2, canvasHeight - 2);
 		},
-		resetProgress: () => {
+		resetProgress() {
 			ctx.clearRect(1, 1, canvasWidth - 2, canvasHeight - 2);
 			drawHolder();
 		}
