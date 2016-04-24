@@ -1,8 +1,15 @@
 'use strict';
 
 module.exports = {
-	scriptsDevPath: 'dev/scripts',
-	scriptsBuildPath: 'build/scripts',
-	stylesDevPath: 'dev/scss',
-	buildFolderPath: 'build'
+	src: {
+		entry: './src',
+		output: './dist'
+	},
+	styles: {
+		entry: './dev/scss'
+	},
+	scripts: {
+		entry: './dev/scripts',
+		output: './dist/scripts'
+	}
 };

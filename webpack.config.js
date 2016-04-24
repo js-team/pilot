@@ -1,30 +1,34 @@
 'use strict';
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
 const webpack = require('webpack');
 const path = require('path');
 const config = require('./app.config');
 
 const plugins = [
-	new webpack.DefinePlugin({
-		NODE_ENV: JSON.stringify(NODE_ENV)
-	}),
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'common'
 	})
 ];
 
+if (!isDevelopment) {
+	module.exports.plugins.push(
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			}
+		})
+	);
+}
+
 module.exports = {
-	context: path.join(__dirname, `/${config.scriptsDevPath}`),
-	entry: {
-		main: './main'
-	},
+	entry: path.resolve(__dirname, `${config.scripts.entry}/main.js`),
 	output: {
-		path: __dirname + `/${config.scriptsBuildPath}`,
+		path: path.resolve(__dirname, `${config.scripts.output}`),
 		filename: '[name].js'
 	},
-	watch: false,
-	devtool: NODE_ENV === 'development' ? 'inline-source-map' : null,
+	watch: isDevelopment,
+	devtool: isDevelopment ? 'inline-source-map' : null,
 	plugins: plugins,
 	module: {
 		loaders: [{
@@ -34,13 +38,3 @@ module.exports = {
 		}]
 	}
 };
-
-if (NODE_ENV === 'production') {
-	module.exports.plugins.push(
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false
-			}
-		})
-	);
-}

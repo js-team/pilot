@@ -2,15 +2,23 @@
 
 const gulp = require('gulp');
 const webpack = require('webpack');
+const path = require('path');
 const webpackConfig = require('./webpack.config');
 const sass = require('gulp-sass');
 const browserSync = require('browser-sync').create();
 const config = require('./app.config');
 
+gulp.task('copy-html', cb => {
+	gulp.src(path.resolve(__dirname, `${config.src.entry}/*`))
+		.pipe(gulp.dest(path.resolve(__dirname, `${config.src.output}`)))
+
+	cb();
+});
+
 gulp.task('build-styles', () => (
-	gulp.src(`./${config.stylesDevPath}/*.scss`)
+	gulp.src(path.resolve(__dirname, `${config.styles.entry}/*.scss`))
 		.pipe(sass())
-		.pipe(gulp.dest(`./${config.buildFolderPath}`))
+		.pipe(gulp.dest(path.resolve(__dirname, `${config.src.output}`)))
 ));
 
 gulp.task('build-scripts', cb => {
@@ -27,17 +35,17 @@ gulp.task('build-scripts', cb => {
 gulp.task('browser-sync', cb => {
 	browserSync.init({
 		server: {
-			baseDir: `./${config.buildFolderPath}/`
+			baseDir: path.resolve(__dirname, `${config.src.output}/`)
 		},
-		files: [`./${config.scriptsBuildPath}/*.js`, `./${config.buildFolderPath}/*.css`, `./${config.buildFolderPath}/*.html`]
+		files: [path.resolve(__dirname, `${config.scripts.output}/*.js`), path.resolve(__dirname, `${config.src.output}/*.*`)]
 	}, cb);
 });
 
 gulp.task('watch', cb => {
-	gulp.watch(`./${config.stylesDevPath}/*.scss`, gulp.series('build-styles'));
+	gulp.watch(path.resolve(__dirname, `${config.styles.entry}/*.scss`), gulp.series('build-styles'));
 
 	cb();
 });
 
-gulp.task('__build', gulp.parallel('build-styles', 'build-scripts'));
+gulp.task('__build', gulp.parallel('copy-html', 'build-styles', 'build-scripts'));
 gulp.task('__dev', gulp.series('__build', 'browser-sync', 'watch'));

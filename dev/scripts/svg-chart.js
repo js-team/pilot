@@ -5,7 +5,7 @@ require('window.requestAnimationFrame');
 import * as lib from './calculate';
 import ProgressBar from './progress-bar';
 
-export class SvgChart {
+export default class {
 	constructor(context) {
 		this.options = {
 			width: 320,
@@ -17,10 +17,6 @@ export class SvgChart {
 			delay: 500
 		};
 
-		this.init(context);
-	}
-
-	init(context) {
 		this.container = context;
 		this.findElements();
 		this.attachEvents();
@@ -112,6 +108,7 @@ export class SvgChart {
 		this.svg.appendChild(this.startButton);
 
 		let rect = document.createElementNS(this.svgns, 'rect');
+
 		rect.setAttribute('rx', 7);
 		rect.setAttribute('ry', 7);
 		rect.setAttribute('width', 100);
@@ -120,17 +117,20 @@ export class SvgChart {
 		this.startButton.appendChild(rect);
 
 		let buttonText = document.createElementNS(this.svgns, 'text');
+
 		buttonText.setAttribute('x', 50);
 		buttonText.setAttribute('y', 20);
 		buttonText.setAttribute('style', 'fill: #fff; font-size: 14px; line-height: 20px; text-anchor: middle;');
 		this.startButton.appendChild(buttonText);
 
 		let textNode = document.createTextNode('Start!');
+
 		buttonText.appendChild(textNode);
 	}
 
 	createInfoBox() {
 		let infoBox = document.createElementNS(this.svgns, 'text');
+
 		infoBox.setAttribute('style', 'fill: #000; font-size: 14px; line-height: 20px; text-anchor: middle;');
 		infoBox.setAttribute('x', this.options.width / 2);
 		infoBox.setAttribute('y', this.options.height * (3 / 4));
@@ -193,12 +193,11 @@ export class SvgChart {
 		let coordinateY = positionY - this.options.height / 2;
 		let radians = Math.atan2(coordinateY, coordinateX);
 		let rotateRadians = radians.toString().indexOf('-') !== -1 ? Math.PI * 2 + radians : radians;
-
 		let angle = lib.transformRadianToAngle(rotateRadians);
 
 		this.rotateElement(this.circle, angle);
 
-		if (angle - this.sectorAngle <= this.lineAngle && angle + this.sectorAngle >= this.lineAngle) {
+		if ((angle - this.sectorAngle <= this.lineAngle) && (angle + this.sectorAngle >= this.lineAngle)) {
 			if (!this.timerState) {
 				this.timerState = true;
 
@@ -271,16 +270,16 @@ export class SvgChart {
 
 		const { options: { outerRadius, innerRadius }, center: { x, y } } = this;
 
-		let startAngle = lib.transformAngleToRadian(this.startAngle);
-		let largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;
-		let startX = x + Math.cos(startAngle) * outerRadius;
-		let startY = y + Math.sin(startAngle) * outerRadius;
-		let endX2 = x + Math.cos(startAngle) * innerRadius;
-		let endY2 = y + Math.sin(startAngle) * innerRadius;
-		let endX = x + Math.cos(endAngle) * outerRadius;
-		let endY = y + Math.sin(endAngle) * outerRadius;
-		let startX2 = x + Math.cos(endAngle) * innerRadius;
-		let startY2 = y + Math.sin(endAngle) * innerRadius;
+		const startAngle = lib.transformAngleToRadian(this.startAngle);
+		const largeArc = ((endAngle - startAngle) % (Math.PI * 2) > Math.PI) ? 1 : 0;
+		const startX = x + Math.cos(startAngle) * outerRadius;
+		const startY = y + Math.sin(startAngle) * outerRadius;
+		const endX2 = x + Math.cos(startAngle) * innerRadius;
+		const endY2 = y + Math.sin(startAngle) * innerRadius;
+		const endX = x + Math.cos(endAngle) * outerRadius;
+		const endY = y + Math.sin(endAngle) * outerRadius;
+		const startX2 = x + Math.cos(endAngle) * innerRadius;
+		const startY2 = y + Math.sin(endAngle) * innerRadius;
 
 		const cmd = [
 			'M', startX, startY,
