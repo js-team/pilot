@@ -11,23 +11,20 @@ let canvasHeight = canvas.height;
 
 export default class {
 	constructor(holder) {
-		let self = this;
-
 		holder.appendChild(canvas);
 
 		this.drawHolder();
+	}
 
-		return {
-			animProgress(percent) {
-				ctx.beginPath();
-				ctx.fillStyle = '#09b646';
-				ctx.fillRect(1, 1, (canvasWidth * percent / 100) - 2, canvasHeight - 2);
-			},
-			resetProgress() {
-				ctx.clearRect(1, 1, canvasWidth - 2, canvasHeight - 2);
-				self.drawHolder();
-			}
-		};
+	animProgress(percent) {
+		ctx.beginPath();
+		ctx.fillStyle = '#09b646';
+		ctx.fillRect(1, 1, (canvasWidth * percent / 100) - 2, canvasHeight - 2);
+	}
+
+	resetProgress() {
+		ctx.clearRect(1, 1, canvasWidth - 2, canvasHeight - 2);
+		this.drawHolder();
 	}
 
 	drawHolder() {
