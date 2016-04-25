@@ -16,6 +16,13 @@ export default class {
 		this.drawHolder();
 	}
 
+	drawHolder() {
+		ctx.beginPath();
+		ctx.fillStyle = '#f0f0f0';
+		ctx.fillRect(1, 1, canvasWidth - 2, canvasHeight - 2);
+		ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
+	}
+
 	animProgress(percent) {
 		ctx.beginPath();
 		ctx.fillStyle = '#09b646';
@@ -25,12 +32,5 @@ export default class {
 	resetProgress() {
 		ctx.clearRect(1, 1, canvasWidth - 2, canvasHeight - 2);
 		this.drawHolder();
-	}
-
-	drawHolder() {
-		ctx.beginPath();
-		ctx.fillStyle = '#f0f0f0';
-		ctx.fillRect(1, 1, canvasWidth - 2, canvasHeight - 2);
-		ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
 	}
 }
