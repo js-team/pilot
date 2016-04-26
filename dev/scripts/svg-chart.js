@@ -1,7 +1,6 @@
 'use strict';
 
-require('window.requestAnimationFrame');
-
+import {} from 'window.requestAnimationFrame';
 import * as lib from './calculate';
 import ProgressBar from './progress-bar';
 

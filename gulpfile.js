@@ -8,9 +8,9 @@ const sass = require('gulp-sass');
 const browserSync = require('browser-sync').create();
 const config = require('./app.config');
 
-gulp.task('copy-html', cb => {
-	gulp.src(path.resolve(__dirname, `${config.src.entry}/*`))
-		.pipe(gulp.dest(path.resolve(__dirname, `${config.src.output}`)))
+gulp.task('copy-base', cb => {
+	gulp.src(path.resolve(__dirname, `${config.base.entry}/*`))
+		.pipe(gulp.dest(path.resolve(__dirname, `${config.base.output}`)))
 
 	cb();
 });
@@ -18,7 +18,7 @@ gulp.task('copy-html', cb => {
 gulp.task('build-styles', () => (
 	gulp.src(path.resolve(__dirname, `${config.styles.entry}/*.scss`))
 		.pipe(sass())
-		.pipe(gulp.dest(path.resolve(__dirname, `${config.src.output}`)))
+		.pipe(gulp.dest(path.resolve(__dirname, `${config.base.output}`)))
 ));
 
 gulp.task('build-scripts', cb => {
@@ -35,9 +35,9 @@ gulp.task('build-scripts', cb => {
 gulp.task('browser-sync', cb => {
 	browserSync.init({
 		server: {
-			baseDir: path.resolve(__dirname, `${config.src.output}/`)
+			baseDir: path.resolve(__dirname, `${config.base.output}/`)
 		},
-		files: [path.resolve(__dirname, `${config.scripts.output}/*.js`), path.resolve(__dirname, `${config.src.output}/*.*`)]
+		files: [path.resolve(__dirname, `${config.scripts.output}/*.js`), path.resolve(__dirname, `${config.base.output}/*.*`)]
 	}, cb);
 });
 
@@ -47,5 +47,5 @@ gulp.task('watch', cb => {
 	cb();
 });
 
-gulp.task('__build', gulp.parallel('copy-html', 'build-styles', 'build-scripts'));
+gulp.task('__build', gulp.parallel('copy-base', 'build-styles', 'build-scripts'));
 gulp.task('__dev', gulp.series('__build', 'browser-sync', 'watch'));

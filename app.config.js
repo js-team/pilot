@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-	src: {
-		entry: './src',
+	base: {
+		entry: './base',
 		output: './dist'
 	},
 	styles: {
